@@ -13,7 +13,6 @@
 int rotaryEncoderValue = 0;
 int currentStateCLK;
 int previousStateCLK;
-String encdir = "";
 
 long displayRefreshTime = 500;
 unsigned long previousMillis = 0;
