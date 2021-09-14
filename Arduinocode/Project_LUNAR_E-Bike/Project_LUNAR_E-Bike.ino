@@ -6,16 +6,15 @@
 #include <LiquidCrystal_I2C.h>
 #include "displayPrint.h"
 #include "rotaryEncoder.h"
+#include "RPMCalculation.h"
 
 #define CLKpin 4
 #define DTpin 5
 
 int rotaryEncoderValue = 0;
-int currentStateCLK;
-int previousStateCLK;
-
 long displayRefreshTime = 500;
 unsigned long previousMillis = 0;
+int printRPM = 0;
 
 LiquidCrystal_I2C lcd(0x3F,20,4);
 
@@ -27,7 +26,8 @@ void setup() {
   pinMode (CLKpin, INPUT);
   pinMode (DTpin, INPUT);
   Serial.begin (9600);
-  previousStateCLK = digitalRead(CLKpin);
+  attachInterrupt(digitalPinToInterrupt(2), Pulse_Event, RISING);
+  delay(1000);
 }
 
 void loop() {
@@ -35,8 +35,9 @@ void loop() {
   
   unsigned long currentMillis = millis();
   if(currentMillis - previousMillis >= displayRefreshTime){
-    displayPrint(rotaryEncoderValue);
+    displayPrint(rotaryEncoderValue, printRPM);
     previousMillis = currentMillis;
   }
-  rotaryEncoderValue = rotaryEncoder(currentStateCLK, previousStateCLK, rotaryEncoderValue, CLKpin, DTpin);
+  rotaryEncoderValue = rotaryEncoder(rotaryEncoderValue, CLKpin, DTpin);
+  printRPM = RPMCalculation();
 }

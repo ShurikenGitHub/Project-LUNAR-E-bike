@@ -1,6 +1,9 @@
 #include "rotaryEncoder.h"
 
-int rotaryEncoder(int currentStateCLK, int previousStateCLK, int rotaryEncoderValue, byte CLKpin, byte DTpin){
+int currentStateCLK;
+int previousStateCLK;
+
+int rotaryEncoder(int rotaryEncoderValue, byte CLKpin, byte DTpin){
   
   currentStateCLK = digitalRead(CLKpin);
 

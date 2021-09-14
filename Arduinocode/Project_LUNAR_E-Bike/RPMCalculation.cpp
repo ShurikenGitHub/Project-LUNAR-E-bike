@@ -1,0 +1,76 @@
+#include "RPMCalculation.h"
+
+unsigned long RPM;
+const byte pulsesPerRevolution = 1;
+const unsigned long zeroTimeout = 300000;
+const byte numReadings = 2;
+volatile unsigned long lastTimeWeMeasured;
+volatile unsigned long periodBetweenPulses = zeroTimeout+1000;
+volatile unsigned long periodAverage = zeroTimeout+1000; 
+unsigned long frequencyRaw;
+unsigned long frequencyReal;
+unsigned long pulseCounter =1;
+unsigned long periodSum;
+unsigned long lastTimeCycleMeasure = lastTimeWeMeasured;
+unsigned long currentMicros = micros();
+unsigned int amountOfReadings = 1;
+unsigned int zeroDebouncingExtra;
+unsigned long readings[numReadings];
+unsigned long readIndex;
+unsigned long total;
+unsigned long average;
+
+int RPMCalculation(){
+  lastTimeCycleMeasure = lastTimeWeMeasured;
+  currentMicros = micros();
+  if(currentMicros < lastTimeCycleMeasure)
+  {
+    lastTimeCycleMeasure = currentMicros;
+  }
+  frequencyRaw = 10000000000 / periodAverage;
+  if(periodBetweenPulses > zeroTimeout - zeroDebouncingExtra || currentMicros - lastTimeCycleMeasure > zeroTimeout - zeroDebouncingExtra)
+  {
+    frequencyRaw = 0;
+    zeroDebouncingExtra = 2000;
+  }
+  else{
+    zeroDebouncingExtra = 0;
+    }
+
+  frequencyReal = frequencyRaw / 10000;
+  RPM = frequencyRaw / pulsesPerRevolution * 60;
+  RPM = RPM / 10000;
+  total = total - readings[readIndex];
+  readings[readIndex] = RPM;
+  total = total + readings[readIndex];
+  readIndex = readIndex + 1;
+  if (readIndex >= numReadings)
+  {
+    readIndex = 0;
+    }
+  average = total / numReadings;
+      Serial.print("RPM = ");
+      Serial.println(RPM);
+  return RPM;
+  }
+
+void Pulse_Event()
+{
+  periodBetweenPulses = micros() - lastTimeWeMeasured;  
+  lastTimeWeMeasured = micros(); 
+  if(pulseCounter >= amountOfReadings)  
+  {
+    periodAverage = periodSum / amountOfReadings; 
+    pulseCounter = 1;  
+    periodSum = periodBetweenPulses; 
+    int remapedAmountOfReadings = map(periodBetweenPulses, 40000, 5000, 1, 10); 
+    remapedAmountOfReadings = constrain(remapedAmountOfReadings, 1, 10); 
+    amountOfReadings = remapedAmountOfReadings;
+  }
+  else
+  {
+    pulseCounter++;
+    periodSum = periodSum + periodBetweenPulses;
+  }
+
+}
