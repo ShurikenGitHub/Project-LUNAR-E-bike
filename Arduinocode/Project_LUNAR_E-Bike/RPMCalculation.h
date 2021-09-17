@@ -2,7 +2,9 @@
 #define RPMCALCULATION_H
 #include <Arduino.h>
 
-int RPMCalculation();
-void Pulse_Event();
+extern unsigned long totalPulses;
 
+int RPMCalculation(unsigned long currentMicros);
+void Pulse_Event();
+//unsigned int returnTotal();
 #endif

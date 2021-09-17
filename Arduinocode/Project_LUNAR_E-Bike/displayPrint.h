@@ -7,6 +7,6 @@
 
 extern LiquidCrystal_I2C lcd;
 
-void displayPrint(int rotaryEncoderValue, unsigned long RPM);
+void displayPrint(int rotaryEncoderValue, unsigned long RPM, int velocity, float totalDistance);
 
 #endif

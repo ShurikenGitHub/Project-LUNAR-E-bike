@@ -1,8 +1,8 @@
 #include "RPMCalculation.h"
 
-unsigned long RPM;
+
 const byte pulsesPerRevolution = 1;
-const unsigned long zeroTimeout = 300000;
+const unsigned long zeroTimeout = 3000000;
 const byte numReadings = 2;
 volatile unsigned long lastTimeWeMeasured;
 volatile unsigned long periodBetweenPulses = zeroTimeout+1000;
@@ -10,17 +10,26 @@ volatile unsigned long periodAverage = zeroTimeout+1000;
 unsigned long frequencyRaw;
 unsigned long frequencyReal;
 unsigned long pulseCounter =1;
-unsigned long periodSum;
 unsigned long lastTimeCycleMeasure = lastTimeWeMeasured;
-unsigned long currentMicros = micros();
-unsigned int amountOfReadings = 1;
-unsigned int zeroDebouncingExtra;
-unsigned long readings[numReadings];
-unsigned long readIndex;
-unsigned long total;
-unsigned long average;
+  unsigned int zeroDebouncingExtra;
+  unsigned long average;
+  unsigned long total;
+  unsigned long readings[numReadings];
+  unsigned long readIndex;
+  unsigned long periodSum;
+  unsigned int amountOfReadings = 1;
 
-int RPMCalculation(){
+  
+
+
+//unsigned int returnTotal(){
+//  Serial.print(totalPulses);
+//  return totalPulses;
+//  }
+
+int RPMCalculation(unsigned long currentMicros){
+
+unsigned long RPM;
   lastTimeCycleMeasure = lastTimeWeMeasured;
   currentMicros = micros();
   if(currentMicros < lastTimeCycleMeasure)
@@ -49,13 +58,12 @@ int RPMCalculation(){
     readIndex = 0;
     }
   average = total / numReadings;
-      Serial.print("RPM = ");
-      Serial.println(RPM);
   return RPM;
   }
 
 void Pulse_Event()
 {
+
   periodBetweenPulses = micros() - lastTimeWeMeasured;  
   lastTimeWeMeasured = micros(); 
   if(pulseCounter >= amountOfReadings)  
@@ -70,7 +78,8 @@ void Pulse_Event()
   else
   {
     pulseCounter++;
+    
     periodSum = periodSum + periodBetweenPulses;
   }
-
+totalPulses++;
 }
