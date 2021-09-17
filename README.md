@@ -1,5 +1,7 @@
 # Project LUNAR E-bike
 
+## Note: this is still a work in progress!!!
+
 ## About
 
 An open source project that allows anyone to build an illegaly fast E-bike for a lot less :heavy_dollar_sign: :heavy_dollar_sign: :heavy_dollar_sign: than a commercial E-bike.
