@@ -17,6 +17,7 @@
 #define motorPin 9
 #define CLKpin 4
 #define DTpin 5
+#define buttonPin 6
 
 int rotaryEncoderValue = 0;
 long displayRefreshTime = 500;
@@ -36,6 +37,7 @@ void setup() {
   lcd.print("Initializing...");
   pinMode (CLKpin, INPUT);
   pinMode (DTpin, INPUT);
+  pinMode (buttonPin, INPUT_PULLUP);
   createChar();
   attachInterrupt(digitalPinToInterrupt(2), Pulse_Event, RISING);
   setPreviousState(CLKpin);
@@ -51,7 +53,7 @@ void loop() {
     displayPrint(rotaryEncoderValue, RPM, velocity, totalDistance);
     previousMillis = currentMillis;
   }
-  rotaryEncoderValue = rotaryEncoder(rotaryEncoderValue, CLKpin, DTpin);
+  rotaryEncoderValue = rotaryEncoder(rotaryEncoderValue, CLKpin, DTpin, buttonPin);
   writeMotorSpeed(rotaryEncoderValue, minSignal, maxSignal);
   RPM = RPMCalculation(currentMicros);
   velocity = velocityCalculation(RPM);

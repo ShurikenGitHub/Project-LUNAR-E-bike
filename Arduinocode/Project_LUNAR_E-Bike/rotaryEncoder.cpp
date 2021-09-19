@@ -2,12 +2,13 @@
 
 int currentStateCLK;
 int previousStateCLK;
+int buttonState = 0;
 
 void setPreviousState(byte CLKpin){
   previousStateCLK = digitalRead(CLKpin);
   }
 
-int rotaryEncoder(int rotaryEncoderValue, byte CLKpin, byte DTpin) {
+int rotaryEncoder(int rotaryEncoderValue, byte CLKpin, byte DTpin, byte buttonPin) {
   currentStateCLK = digitalRead(CLKpin);
 
   if ( currentStateCLK != previousStateCLK ) {
@@ -26,5 +27,9 @@ int rotaryEncoder(int rotaryEncoderValue, byte CLKpin, byte DTpin) {
     }
   }
   previousStateCLK = currentStateCLK;
+  buttonState = digitalRead(buttonPin);
+  if(buttonState == 0) {
+    rotaryEncoderValue = 0;
+    }
   return rotaryEncoderValue;
 }
